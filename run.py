@@ -1,8 +1,9 @@
-from lib.videoscanner import VideoScanner
+from lib.trailcam_findmax import *
 
-scanner = VideoScanner()
+scanner = TrailcamFindMax()
+
+scanner.setDebug(print)
 
 fn = input("Video Path: ")
 stats = scanner.scan(fn)
-print('scan complete')
 print(stats)
