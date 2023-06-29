@@ -41,7 +41,7 @@ Use the env:
 > d:/python/yolov8/Scripts/activate.bat
 
 Invoke the trailcam scanner:
-> python -m run D:/Trails/100MEDIA/DSCF0090.AVI > runs/DSCF0090.yolov8l.txt
+> python -m run D:/Trails/100MEDIA/_testfile-720p2.mp4 > runs/_testfile-720p2.yolov8l.txt
 
 Test yolo predict:
 > yolo predict model=cache/yolov8l.pt source=D:/Trails/100MEDIA/DSCF0090.AVI

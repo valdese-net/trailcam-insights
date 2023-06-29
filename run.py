@@ -19,7 +19,7 @@ class MainApp:
 
 	def detect(self):
 		for fn in self.flist:
-			r = self.yolo.predict(fn)
+			r = self.yolo.predict(fn, resized_fn='runs/_test.mp4')
 			print(r['source'])
 			for obj in r['detect']: print(obj)
 
