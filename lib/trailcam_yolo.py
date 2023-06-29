@@ -25,7 +25,7 @@ class Trailcam_YOLO:
 			'filename': fn,
 			'timestamp': last_modified,
 			'framerate': vc.get(cv2.CAP_PROP_FPS),
-			'framesize-orig': (frame_width,frame_width),
+			'framesize-orig': (frame_width,frame_height),
 			'framesize': (1000,(1000*frame_height) // frame_width),
 			"model": self.modelname
 		}
