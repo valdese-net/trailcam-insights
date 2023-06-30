@@ -1,5 +1,5 @@
+import sys
 import argparse
-import os
 from lib.trailcam_insights import *
 
 ap = argparse.ArgumentParser(description='Use YOLOv8 on trailcam videos to gather insights on trail utilization')
@@ -9,14 +9,9 @@ ap.add_argument('-d', '--debug', required=False, action='store_true', default=Fa
 
 args = vars(ap.parse_args())
 
-fn =  args['pathname']
+app = TrailcamInsights(args['model'])
+if args['debug']: app.showDebug()
+if not app.preload(args['pathname']):
+	sys.exit('not found')
 
-if not fn:
-	print('no file specified', file=sys.stderr)
-elif not os.path.exists(fn):
-	print(f'file not found: {fn}', file=sys.stderr)
-else:
-	app = TrailcamInsights(args['model'])
-	if args['debug']: app.showDebug()
-	app.preload(fn)
-	app.detect()
+app.detect()

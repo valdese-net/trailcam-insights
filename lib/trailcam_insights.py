@@ -1,5 +1,5 @@
 from lib.trailcam_yolo import *
-import os
+from pathlib import Path
 import sys
 import json
 
@@ -8,23 +8,31 @@ class TrailcamInsights:
 		self.modelname = modelname
 		self.yolo = Trailcam_YOLO(self.modelname)
 		self.flist = []
+		self.debugMode = False
 
 	def showDebug(self):
+		self.debugMode = True
 		self.yolo.setDebug(lambda msg: print(f'debug: {msg}',file=sys.stderr))
 
 	def preload(self,p):
-		if os.path.isfile(p):
-			self.flist.append(p)
-		else:
-			for root, _, files in os.walk(p):
-				for f in files:
-					if f.lower().endswith((".mp4", ".avi")):
-						self.flist.append(os.path.join(root, f))
+		pf = Path(p)
+		if pf.is_file():
+			self.flist.append(pf)
+			return True
+
+		if not pf.is_dir(): return False
+
+		for f in pf.rglob('*.avi'): self.flist.append(f)
+		for f in pf.rglob('*.mp4'): self.flist.append(f)
+		self.flist.sort()
+		if self.debugMode: print(f'preloaded: {self.flist}',file=sys.stderr)
+		return True
 
 	def predictOn(self,fn):
-		fn_data_fn = f'{fn}.{self.modelname}.json'
+		fn_data_fn = fn.parent / f'{fn.name}.{self.modelname}.json'
 		d = ''
-		if os.path.isfile(fn_data_fn):
+		if fn_data_fn.is_file():
+			if self.debugMode: print(f'loading prior detection for: {fn_data_fn}',file=sys.stderr)
 			with open(fn_data_fn, 'r') as o1: d = json.load(o1)
 		else:
 			d = self.yolo.predict(fn, False)
