@@ -6,13 +6,17 @@ import imutils
 class Trailcam_YOLO:
 	def __init__(self, modelname='yolov8l'):
 		self.modelname = modelname
-		self.model = YOLO("cache/%s.pt" % modelname)
+		self.model = False
 		self.debugF = False
 
 	def setDebug(self,f):
 		self.debugF = f
 
-	def predict(self, fn, resized_fn=False):
+	def predict(self, fn, resize_fn=False):
+		if not self.model:
+			if self.debugF: self.debugF(f'loading YOLOv8({self.modelname})')
+			self.model = YOLO("cache/%s.pt" % self.modelname)
+
 		last_modified = os.path.getmtime(fn)
 		classnames = self.model.names
 		rdata = []
@@ -32,9 +36,9 @@ class Trailcam_YOLO:
 
 		if self.debugF: self.debugF(f'running predict on {fstats}')
 
-		if resized_fn:
+		if resize_fn:
 			fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-			writer = cv2.VideoWriter(resized_fn, fourcc, fstats['framerate'], fstats['framesize'])
+			writer = cv2.VideoWriter(resize_fn, fourcc, fstats['framerate'], fstats['framesize'])
 
 		while True:
 			success, frame = vc.read()
@@ -46,8 +50,7 @@ class Trailcam_YOLO:
 			frame = cv2.resize(frame, fstats['framesize'])
 			if writer: writer.write(frame)
 
-			for r in self.model.predict(frame, verbose=True, stream=True):
-				if self.debugF and not (frame_count % 10): self.debugF(f'frame {frame_count}')
+			for r in self.model.predict(frame, verbose=(self.debugF != False), stream=True):
 				for box in r.boxes:
 					objname_idx = int(box.cls[0])
 					objname = classnames[objname_idx]

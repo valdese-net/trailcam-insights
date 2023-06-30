@@ -8,10 +8,12 @@ shares the following common traits:
 - many trees and other natural obstructions are contained in the footage
 - video often contains a large pixel range, but with poor quality and motion blur
 
-## Goal
-
 The goal is to automate the processing of video clips produced by the trail
 cameras in order to gain insights into the park eco system and its utilization.
+
+This tool is invoked from the command line console. For help, start with:
+
+`python run.py -h`
 
 ## Design Decisions
 
@@ -40,8 +42,8 @@ Use the env:
 > source d:/python/yolov8/Scripts/activate
 > d:/python/yolov8/Scripts/activate.bat
 
-Invoke the trailcam scanner:
-> python -m run D:/Trails/100MEDIA/_testfile-720p2.mp4 > runs/_testfile-720p2.yolov8l.txt
-
 Test yolo predict:
-> yolo predict model=cache/yolov8l.pt source=D:/Trails/100MEDIA/DSCF0090.AVI
+> yolo predict model=cache/yolov8l.pt source=/path/to/video
+
+Invoke the trailcam scanner:
+> python run.py /path/to/video/folder > /path/to/output/file.csv
