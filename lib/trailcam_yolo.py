@@ -13,6 +13,7 @@ class Trailcam_YOLO:
 		self.debugF = f
 
 	def predict(self, fn, resize_fn=False):
+		fn = str(fn) # fn is a Path object, which can cause problems
 		if not self.model:
 			if self.debugF: self.debugF(f'loading YOLOv8({self.modelname})')
 			self.model = YOLO("cache/%s.pt" % self.modelname)
@@ -25,12 +26,13 @@ class Trailcam_YOLO:
 		frame_count = 0
 		frame_width = int(vc.get(cv2.CAP_PROP_FRAME_WIDTH))
 		frame_height = int(vc.get(cv2.CAP_PROP_FRAME_HEIGHT))
+		frame_new_width = 1000
 		fstats = {
 			'filename': fn,
 			'timestamp': last_modified,
 			'framerate': vc.get(cv2.CAP_PROP_FPS),
 			'framesize-orig': (frame_width,frame_height),
-			'framesize': (1000,(1000*frame_height) // frame_width),
+			'framesize': (frame_new_width,(frame_new_width*frame_height) // frame_width),
 			"model": self.modelname
 		}
 

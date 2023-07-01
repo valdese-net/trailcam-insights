@@ -17,18 +17,21 @@ This tool is invoked from the command line console. For help, start with:
 
 ## Design Decisions
 
-After some experimentation, I decided to use Ultralytics YOLOv8 as the video
-processing tool. This system contains built-in supoprt for `predict` and `track`
-methods on standard, as well as customized, models. Details can be found at:
+This tools currently uses Ultralytics YOLOv8 as the video processing tool.
+This system contains built-in supoprt for `predict` and `track` methods
+on standard, as well as customized, models. Details can be found at:
 
 <https://docs.ultralytics.com/>
 
 While experimenting with Detection and Instance Segmentation Models, using
 both `predict` and `track` model methods, it is clear that this effort consumes
-significant processing time and power. In classic Unix fashion, I think it is
-best to break the analysis process into a series of smaller tasks. The first
-task should be to run `predict` on the video data, collecting and capturing the
-results for further processing in later tasks.
+significant processing time and power. The tool creates a `json` capture of
+`predict` results, which allows a directory of videos to be stopped and resumed
+later.
+
+Early results indicate that a custom model might be required to get good
+results on our trailcam videos. The current processing using large model
+is slow, and not very accurate.
 
 ## Python Environment
 
@@ -43,7 +46,7 @@ Use the env:
 > d:/python/yolov8/Scripts/activate.bat
 
 Test yolo predict:
-> yolo predict model=cache/yolov8l.pt source=/path/to/video
+> yolo predict model=cache/yolov8s.pt source=/path/to/video
 
 Invoke the trailcam scanner:
-> python run.py /path/to/video/folder > /path/to/output/file.csv
+> python run.py /path/to/video/folder

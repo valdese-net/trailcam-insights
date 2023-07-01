@@ -1,6 +1,7 @@
 from lib.trailcam_yolo import *
 from pathlib import Path
 import sys
+import time
 import json
 
 class TrailcamInsights:
@@ -37,11 +38,13 @@ class TrailcamInsights:
 		else:
 			d = self.yolo.predict(fn, False)
 			with open(fn_data_fn, 'w') as o1: json.dump(d, o1)
+			time.sleep(2) # briefly cool the cpu
 		return d
 			
 	def detect(self):
 		results = []
 		for fn in self.flist:
+			print(f'predict: {fn}',file=sys.stderr)
 			r = self.predictOn(fn)
 			print(r['source'])
 			for obj in r['detect']: print(obj)
