@@ -26,7 +26,7 @@ class Trailcam_YOLO:
 		frame_count = 0
 		frame_width = int(vc.get(cv2.CAP_PROP_FRAME_WIDTH))
 		frame_height = int(vc.get(cv2.CAP_PROP_FRAME_HEIGHT))
-		frame_new_width = 1000
+		frame_new_width = 640
 		fstats = {
 			'filename': fn,
 			'timestamp': last_modified,
@@ -40,7 +40,7 @@ class Trailcam_YOLO:
 
 		if resize_fn:
 			fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-			writer = cv2.VideoWriter(resize_fn, fourcc, fstats['framerate'], fstats['framesize'])
+			writer = cv2.VideoWriter(str(resize_fn), fourcc, fstats['framerate'], fstats['framesize'])
 
 		while True:
 			success, frame = vc.read()
@@ -49,7 +49,9 @@ class Trailcam_YOLO:
 			timecode = round(vc.get(cv2.CAP_PROP_POS_MSEC))
 			frame_count += 1
 
-			frame = cv2.resize(frame, fstats['framesize'])
+			# After testing imutils and cv2, the imutils version looks better, likely due to anti-aliasing
+			#frame = cv2.resize(frame, fstats['framesize'])
+			frame = imutils.resize(frame,width=frame_new_width)
 			if writer: writer.write(frame)
 
 			for r in self.model.predict(frame, verbose=(self.debugF != False), stream=True):

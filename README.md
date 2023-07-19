@@ -33,6 +33,18 @@ Early results indicate that a custom model might be required to get good
 results on our trailcam videos. The current processing using large model
 is slow, and not very accurate.
 
+### Custom Training
+
+Might try training YOLO using actual tralcam data that has previously been captured,
+as explained here:
+
+<https://www.youtube.com/watch?v=m9fH9OWn8YM>
+
+Possible tools for data annotation:
+
+- <https://github.com/tunahansalih/yolo-annotation-tool>
+- <https://github.com/opencv/cvat>
+
 ## Python Environment
 
 Python 3.9 is required. I tried to use Python 3.11, but encountered problems
