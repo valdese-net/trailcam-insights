@@ -7,7 +7,6 @@ import sys
 import time
 import os
 import json
-from datetime import date
 
 def outDebug(msg):
 	print(f'debug: {msg}',file=sys.stderr)
@@ -37,7 +36,8 @@ class TrailcamApp:
 		if self.debugMode: outDebug(f'preloaded: {self.flist}')
 		return True
 
-	def predictOn(self,fn):
+	def detectOn(self,fn):
+		print(f'predict: {fn}',file=sys.stderr)
 		if not self.actionObj:
 			self.actionObj = Trailcam_YOLO(self.modelname)
 			if self.debugMode: self.actionObj.setDebug(outDebug)
@@ -52,11 +52,14 @@ class TrailcamApp:
 			d = self.actionObj.predict(fn, False)
 			with open(fn_data_fn, 'w') as o1: json.dump(d, o1)
 			time.sleep(2) # briefly cool the cpu
+		print(d['source'])
+		for obj in d['detect']: print(obj)
+		self.results.append(d)
 		return d
 
 	def trainOn(self,fn):
 		if not self.actionObj:
-			self.actionObj = TrailcamTrain(self.args['fps'])
+			self.actionObj = TrailcamTrain(self.args['outpath'])
 		self.actionObj.train(fn)
 
 	def transcodeOn(self,fn):
@@ -73,20 +76,6 @@ class TrailcamApp:
 			self.actionObj.transcode(fn,transcodeFN)
 			os.utime(transcodeFN,(last_modified,last_modified))
 
-	def runOn(self,fn):
-		if self.args['action'] == 'train':
-			self.trainOn(fn)
-		elif self.args['action'] == 'transcode':
-			self.transcodeOn(fn)
-		elif self.args['action'] == 'detect':
-			print(f'predict: {fn}',file=sys.stderr)
-			r = self.predictOn(fn)
-			print(r['source'])
-			for obj in r['detect']: print(obj)
-			self.results.append(r)
-		else:
-			outDebug(f'skipped {fn}')
-
 	def execute(self):
 		for fn in self.flist:
-			self.runOn(fn)
+			getattr(self, self.args['action']+'On')(fn)

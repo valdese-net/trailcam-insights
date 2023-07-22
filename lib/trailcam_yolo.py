@@ -16,7 +16,10 @@ class Trailcam_YOLO:
 		fn = str(fn) # fn is a Path object, which can cause problems
 		if not self.model:
 			if self.debugF: self.debugF(f'loading YOLOv8({self.modelname})')
-			self.model = YOLO("cache/%s.pt" % self.modelname)
+			if self.modelname.startswith('yolo'):
+				self.model = YOLO("cache/%s.pt" % self.modelname)
+			else:
+				self.model = YOLO(self.modelname)
 
 		last_modified = os.path.getmtime(fn)
 		classnames = self.model.names

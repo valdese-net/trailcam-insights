@@ -54,11 +54,11 @@ Create the env:
 > python -m venv d:/python/yolov8
 
 Use the env:
-> source d:/python/yolov8/Scripts/activate
+>  
 > d:/python/yolov8/Scripts/activate.bat
 
 Test yolo predict:
-> yolo predict model=cache/yolov8s.pt source=/path/to/video
+> yolo predict model=vlp-greenway-n.pt show=True source=/path/to/video
 
 Invoke the trailcam scanner:
-> python run.py /path/to/video/folder
+> python run.py detect /path/to/video/folder
